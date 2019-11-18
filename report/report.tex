@@ -58,14 +58,14 @@ Term Project - Part \RN{1}}
 	\node[shape=circle,draw=black] (r2) at (2, 1) {\textbf{r2}};
 	\node[shape=circle,draw=black] (r3) at (5, 1) {\textbf{r3}};
 	\node[shape=circle,draw=black] (d) at (2, -2) {\textbf{d}};
-	\path[-] (r1) edge  node[above left] {94.84} (s);
-	\path[-] (r1) edge  node[below left] {93.84} (d);
-	\path[-] (r2) edge  node[above] {187.00} (r1);
-	\path[-] (r2) edge  node[above] {109.88} (r3);
-	\path[-] (r2) edge  node[right] {129.88} (s);
-	\path[-] (r2) edge  node[right] {110.85} (d);
-	\path[-] (r3) edge  node[above right] {0.54} (s);
-	\path[-] (r3) edge  node[below right] {0.54} (d);
+	\path[-] (r1) edge  node[above left] {104.81} (s);
+	\path[-] (r1) edge  node[below left] {79.81} (d);
+	\path[-] (r2) edge  node[above] {218.88} (r1);
+	\path[-] (r2) edge  node[above] {103.81} (r3);
+	\path[-] (r2) edge  node[right] {108.81} (s);
+	\path[-] (r2) edge  node[right] {87.81} (d);
+	\path[-] (r3) edge  node[above right] {0.50} (s);
+	\path[-] (r3) edge  node[below right] {0.50} (d);
 	\end{tikzpicture} 
 \end{figure}
 
@@ -94,9 +94,9 @@ d&$\infty$&None\\ \hline
 \hline
 \textbf{Node}&\textbf{Distance from s}&\textbf{Previous node}\\ \hline
 s&$0$&None\\ \hline
-r1&$94.84$&s\\ \hline
-r2&$129.88$&s\\ \hline
-r3&$0.54$&s\\ \hline
+r1&$104.81$&s\\ \hline
+r2&$108.81$&s\\ \hline
+r3&$0.50$&s\\ \hline
 d&$\infty$&None\\ \hline
 \end{tabular}
 \end{table}
@@ -110,12 +110,47 @@ d&$\infty$&None\\ \hline
 \hline
 \textbf{Node}&\textbf{Distance from s}&\textbf{Previous node}\\ \hline
 s&$0$&None\\ \hline
-r1&$94.84$&s\\ \hline
-r2&$110.42$&r3\\ \hline
-r3&$0.54$&s\\ \hline
-d&$1.08$&r3\\ \hline
+r1&$104.81$&s\\ \hline
+r2&$104.31$&r3\\ \hline
+r3&$0.50$&s\\ \hline
+d&$1.00$&r3\\ \hline
 \end{tabular}
 \end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{After Third Iteration}
+\label{my-label1}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Node}&\textbf{Distance from s}&\textbf{Previous node}\\ \hline
+s&$0$&None\\ \hline
+r1&$80.81$&d\\ \hline
+r2&$88.81$&d\\ \hline
+r3&$0.50$&s\\ \hline
+d&$1.00$&r3\\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure*}[t]
+\caption{Mean End-to-End Delay vs Network Emulated Delay}
+\centerline{\includegraphics[width=\textwidth]{exps.pdf}}
+\label{fig}
+\end{figure*}
+
+
+
+
+%\begin{figure*}[tp]% AFAICT, adding ! does nothing useful
+ %\vspace*{\dimexpr -1in-\topmargin-\headheight-\headsep}%
+ %\makebox[\textwidth]{%
+  % \includegraphics[width=\paperwidth]{exps.pdf}}
+ %\caption{aaa}% do not put inside \makebox
+ %\label{aaa}
+%\end{figure*}
 
 
 \end{document}
