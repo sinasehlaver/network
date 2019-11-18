@@ -2,4 +2,4 @@
 
 set -e
 
-python3 main.py
+python3 ~/experimentScripts/main.py

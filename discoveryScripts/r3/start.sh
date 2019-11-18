@@ -2,4 +2,4 @@
 
 set -e
 
-python3 main.py $1
+python3 ~/discoveryScripts/main.py $1

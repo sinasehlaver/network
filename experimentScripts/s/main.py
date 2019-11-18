@@ -29,7 +29,7 @@ def client(src_ip, src_port, dst_ip, dst_port):
 def main():
     global N, M
     N = int(sys.argv[1]) / M
-    N = 1 if N == 0 else np.ceil(N)
+    N = 1 if N == 0 else int(np.ceil(N))
     t_client = threading.Thread(target=client, args=("10.10.3.1", 8080, "10.10.3.2", 8080))
     t_client.start()
     t_client.join()
