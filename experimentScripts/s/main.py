@@ -20,22 +20,26 @@ def client(src_ip, src_port, dst_ip, dst_port):
         client_socket.sendto(sync_packet, (dst_ip, dst_port))
         client_socket.recvfrom(1024)
         for j in range(M):
-            s = time.time()
+            start = time.time()
             client_socket.sendto(dummy_packet, (dst_ip, dst_port))
-            e, _ = client_socket.recvfrom(1024)
-            e = float(e)
-            end_to_end_delays.append(e - s)
+            end, _ = client_socket.recvfrom(1024)
+            end = float(end)
+            end_to_end_delays.append(end - start)
 
 def main():
     global N, M
     N = int(sys.argv[1]) / M
+    exp_name = sys.argv[2]
     N = 1 if N == 0 else int(np.ceil(N))
     t_client = threading.Thread(target=client, args=("10.10.3.1", 8080, "10.10.3.2", 8080))
     t_client.start()
     t_client.join()
-    print(np.mean(end_to_end_delays))
-    print(np.std(end_to_end_delays))
     termination_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     termination_socket.sendto("!".encode(), ("10.10.3.2", 7070))
+    out = "N = " + str(N * M) + "\n" + "Mean = " + str(np.mean(end_to_end_delays)) + "\n" + "Standard Deviation = " + str(np.std(end_to_end_delays)) + "\n"
+    f = open(exp_name + ".txt", "w+")
+    f.write(out)
+    f.close()
+    print(out)
 
 main()

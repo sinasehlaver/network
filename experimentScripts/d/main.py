@@ -10,10 +10,10 @@ def server(src_ip, src_port, dst_ip, dst_port):
     sync_packet = "!".encode()
     while True:
         packet, _ = server_socket.recvfrom(1024)
-        e = time.time()
+        end = time.time()
         if packet == sync_packet:
             sp.call("sudo ntpdate -u pool.ntp.org", shell=True)
-        server_socket.sendto(str(e).encode(), (dst_ip, dst_port))
+        server_socket.sendto(str(end).encode(), (dst_ip, dst_port))
 
 def main():
     t_server = threading.Thread(target=server, args=("10.10.7.1", 8080, "10.10.7.2", 8080))
