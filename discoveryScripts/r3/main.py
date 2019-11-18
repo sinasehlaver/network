@@ -12,19 +12,19 @@ def server(ip, port):
     server_socket.recvfrom(1024)
     lock.release()
     while True:
-        data, addr = server_socket.recvfrom(1024)
-        server_socket.sendto(data, addr)
+        packet, addr = server_socket.recvfrom(1024)
+        server_socket.sendto(packet, addr)
 
 def client(name, ip, port, N):
     global rtts
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    dummy_packet = ".".encode()
     for i in range(N):
-        packet = str(i).encode()
         start = time.time()
-        client_socket.sendto(packet, (ip, port))
-        data, addr = client_socket.recvfrom(1024)
+        client_socket.sendto(dummy_packet, (ip, port))
+        client_socket.recvfrom(1024)
         end = time.time()
-        rtts[name] += end - start
+        rtts[name] += (end - start)
     rtts[name] /= N
 
 def main():
@@ -36,22 +36,21 @@ def main():
     t_server.start()
     lock.acquire()
     lock.release()
-    t_s = threading.Thread(target=client, args=("s", "10.10.3.1", 8080, N))
-    t_d = threading.Thread(target=client, args=("d", "10.10.7.1", 8080, N))
-    t_s.start()
-    t_d.start()
-    t_s.join()
-    t_d.join()
+    t_client_s = threading.Thread(target=client, args=("s", "10.10.3.1", 8080, N))
+    t_client_d = threading.Thread(target=client, args=("d", "10.10.7.1", 8080, N))
+    t_client_s.start()
+    t_client_d.start()
+    t_client_s.join()
+    t_client_d.join()
     f = open("link_costs.txt", "w+")
     for i in rtts:
-        out = "r3 - " + i + " = " + str(rtts[i])
-        print(out)
+        out = "r3-" + i + " = " + str(rtts[i])
         f.write(out + "\n")
+        print(out)
     f.close()
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.bind(("10.10.6.2", 7070))
-    s.sendto("!".encode(), ("10.10.6.1", 7070))
-    s.recvfrom(1024)
+    termination_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    termination_socket.bind(("10.10.6.2", 7070))
+    termination_socket.sendto("!".encode(), ("10.10.6.1", 7070))
+    termination_socket.recvfrom(1024)
 
 main()
-

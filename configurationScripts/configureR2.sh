@@ -8,8 +8,6 @@ r1_adapter=$(ip route get $r1 | grep -Po '(?<=(dev )).*(?= src| proto)')
 r3_adapter=$(ip route get $r3 | grep -Po '(?<=(dev )).*(?= src| proto)')
 d_adapter=$(ip route get $d | grep -Po '(?<=(dev )).*(?= src| proto)')
 
-
-
 s_random_delay=$(( ( RANDOM % 50 )  + 80 ))"ms"
 r1_random_delay=$(( ( RANDOM % 50 )  + 80 ))"ms"
 r3_random_delay=$(( ( RANDOM % 50 )  + 80 ))"ms"
