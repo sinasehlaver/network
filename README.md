@@ -2,7 +2,7 @@
 <!-- Beyazit Yalcinkaya, 2172138 -->
 
 
-# network
+# Network
 
 ## Requirements
 
@@ -14,9 +14,8 @@
 6. Python3 Module numpy
 7. Python3 Module scipy
 8. Python3 Module sys
-9. Python3 Module socket
-10. Linux Command ntpdate
-12. Linux Command tc/netem
+9. Linux Command ntpdate
+10. Linux Command tc/netem
 
 
 ## Project Structure
@@ -108,7 +107,7 @@ Below, we specify how to run scripts to find link costs and experiment.
 7. From r1, run `bash discoveryScripts/r1/start.sh 1000` for 1000 samples.
 8. From r3, run `bash discoveryScripts/r3/start.sh 1000` for 1000 samples.
 9. The order of steps 5, 6, 7, and 8 are not important.
-10. From r2, run `bash discoveryScripts/r2/start.sh 1000` for 1000 samples. This step should be run last because r2 initiates all communication amoung nodes.
+10. From r2, run `bash discoveryScripts/r2/start.sh 1000` for 1000 samples. This step should be run last because r2 initiates all communication among nodes.
 
 After following these steps, `discoveryScripts/r1/link_costs.txt` contains costs for s-r1 and d-r1; `discoveryScripts/r2/link_costs.txt` contains costs for s-r2, r1-r2, r3-r2, and d-r2; and `discoveryScripts/r3/link_costs.txt` contains costs for s-r3 and d-r3.
 

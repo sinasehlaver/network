@@ -22,10 +22,10 @@ def client(src_ip, src_port, dst_ip, dst_port):
     It sends N * M messages to the (dst_ip, dst_port).
     Args:
         name: Name of the node to which the packets will sent.
-              This name is used for the rtts dictionary.
+              This name is used for the end-to-end dictionary.
         ip: IP of the server machine.
         port: Port number used by the server machine.
-        N: Number of samples for predicting RTT.
+        N: Number of samples for predicting end-to-end delay.
     """
     global N, M, end_to_end_delays
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
