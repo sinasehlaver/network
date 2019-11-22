@@ -2,7 +2,7 @@
 <!-- Beyazit Yalcinkaya, 2172138 -->
 
 
-# Network
+# CENG 435 - Data Communications and Networking Term Project - Part I
 
 ## Requirements
 
