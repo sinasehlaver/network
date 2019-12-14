@@ -2,7 +2,7 @@
 <!-- Beyazit Yalcinkaya, 2172138 -->
 
 
-# Network
+# CENG 435 - Data Communications and Networking Term Project - Part I
 
 ## Requirements
 
@@ -23,7 +23,7 @@
 Below, we first give the file structure of the project. `configurationScripts` folder contains all configuration scripts that applies all `tc/netem` commands. `discoveryScripts` folder contains all scripts for discoverying the RTTs of edges between nodes. `experimentScripts` folder contains all the scripts for experiments 1, 2, and 3.
 
 ```
-project
+TP_Part1_16
 │   README.md
 │   tr2_request_rspec.xml    
 │
@@ -98,8 +98,8 @@ Below, we specify how to run scripts to find link costs and experiment.
 ### Finding Link Costs
 
 
-1. Copy project to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
-2. Run `cd ~/project`
+1. Copy TP\_Part1\_16 to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
+2. Run `cd ~/TP_Part1_16`
 3. From r1, run `bash configurationScripts/configureR1.sh`
 4. From r2, run `bash configurationScripts/configureR2.sh`
 5. From s, run `bash discoveryScripts/s/start.sh`
@@ -128,8 +128,8 @@ All link costs are listed in `discoveryScripts/link_costs_merged.txt`.
 
 For experiment 1, do the following steps.
 
-1. Copy project to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
-2. Run `cd ~/project`
+1. Copy TP\_Part1\_16 to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
+2. Run `cd ~/TP_Part1_16 `
 3. From r3, run `bash configurationScripts/resetConfigureR3`
 4. From r3, run `bash configurationScripts/configExp1R3`
 5. From s, run `bash configurationScripts/resetConfigureSD`
@@ -147,8 +147,8 @@ After following these steps, `experimentScripts/s/exp1.txt` contains number of s
 
 For experiment 1, do the following steps.
 
-1. Copy project to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
-2. Run `cd ~/project`
+1. Copy TP\_Part1\_16 to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
+2. Run `cd ~/TP_Part1_16`
 3. From r3, run `bash configurationScripts/resetConfigureR3`
 4. From r3, run `bash configurationScripts/configExp2R3`
 5. From s, run `bash configurationScripts/resetConfigureSD`
@@ -166,8 +166,8 @@ After following these steps, `experimentScripts/s/exp2.txt` contains number of s
 
 For experiment 1, do the following steps.
 
-1. Copy project to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
-2. Run `cd ~/project`
+1. Copy TP\_Part1\_16 to each machine in `~/` directory, you can also copy only the corresponding folder, i.e., for s, you do not need to copy folders named r1, r2, r3, and d.
+2. Run `cd ~/TP_Part1_16`
 3. From r3, run `bash configurationScripts/resetConfigureR3`
 4. From r3, run `bash configurationScripts/configExp3R3`
 5. From s, run `bash configurationScripts/resetConfigureSD`
