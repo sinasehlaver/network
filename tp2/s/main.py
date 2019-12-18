@@ -2,13 +2,19 @@ import socket
 import threading
 import struct
 import sys
+import time
 
-window_size = 10
+payload_size = 512
+N = 5*1024*1024//payload_size
+
 base = 0
-next_packet = 0
+window_size = 8
 
-base_lock = threading.Lock()
-next_packet_lock = threading.Lock()
+is_acked = [False] * N
+is_sent = [False] * N
+byte_chunks = []
+
+timeout_value = 1
 
 def calculate_checksum(payload):
     s = 0
@@ -23,54 +29,55 @@ def create_packet(seq_n, ack_n, payload="".encode()):
     length = 8 + len(payload)
     return struct.pack("!HHHH", checksum, length, seq_n, ack_n) + payload
 
-def divide_into_byte_chunks(file_name, payload_size):
-    f = open(file_name, "r")
+def divide_into_byte_chunks(file_name):
+    global payload_size, N, byte_chunks
+    f = open(file_name, "rb")
     content = f.read()
     f.close()
-    n = int(len(content)/payload_size) + 1
-    byte_chunks = []
-    for i in range(1, n):
-        byte_chunks.append(content[(i - 1)*payload_size:i*payload_size].encode())
-    return byte_chunks
+    for i in range(N):
+        byte_chunks.append(content[i*payload_size : (i + 1)*payload_size])
 
-def file_sender(src_ip, src_port, dst_ip, dst_port, file_name):
-    global window_size, base, next_packet
-    byte_chunks = divide_into_byte_chunks(file_name, 512)
+def file_sender(dst_ip, dst_port):
+    global N, base, window_size, is_acked, is_sent, byte_chunks
     file_sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    reached_end = False
+    while not all(is_acked):
+        if not reached_end:
+            for i in range(base, base + window_size):
+                if is_acked[i]:
+                    if base + window_size + 1 <= N:
+                        base += 1
+                    else:
+                        reached_end = True
+                        break
+        for i in range(base, base + window_size):
+            if not is_sent[i]:
+                threading.Thread(target=sender, args=(file_sender_socket, dst_ip, dst_port, i)).start()
+                is_sent[i] = True
+    file_sender_socket.sendto(create_packet(0, 0), (dst_ip, dst_port))
+
+def ack_receiver(src_ip, src_port):
+    global is_acked
     ack_receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     ack_receiver_socket.bind((src_ip, src_port))
-    ack_receiver_socket.settimeout(1)
-    next_packet_lock.acquire()
-    while next_packet < len(byte_chunks):
-        next_packet_lock.release()
-        next_packet_lock.acquire()
-        base_lock.acquire()
-        if next_packet < base + window_size:
-            file_sender_socket.sendto(create_packet(next_packet + 1, 0, byte_chunks[next_packet]), (dst_ip, dst_port))
-            next_packet += 1
-            threading.Thread(target=ack_receiver, args=(ack_receiver_socket,)).start()
-        base_lock.release()
-        next_packet_lock.release()
-        next_packet_lock.acquire()
-    next_packet_lock.release()
-
-def ack_receiver(ack_receiver_socket):
-    global base, next_packet
-    try:
+    while not all(is_acked):
         packet, _ = ack_receiver_socket.recvfrom(1024)
-        checksum, length, seq_n, ack_n = struct.unpack("!HHHH", packet[:8])
-        base_lock.acquire()
-        if ack_n > base:
-            base = ack_n
-        base_lock.release()
-    except socket.timeout:
-        next_packet_lock.acquire()
-        next_packet = base
-        next_packet_lock.release()
+        _, _, _, ack_n = struct.unpack("!HHHH", packet[:8])
+        is_acked[ack_n - 1] = True
+
+def sender(file_sender_socket, dst_ip, dst_port, i):
+    global is_acked, byte_chunks, timeout_value
+    while not is_acked[i]:
+        file_sender_socket.sendto(create_packet(i + 1, 0, byte_chunks[i]), (dst_ip, dst_port))
+        time.sleep(timeout_value)
 
 def main():
-    t_client = threading.Thread(target=file_sender, args=("10.10.3.1", 8080, "10.10.3.2", 8080, sys.argv[1]))
-    t_client.start()
-    t_client.join()
+    divide_into_byte_chunks(sys.argv[1])
+    t_file_sender = threading.Thread(target=file_sender, args=("10.10.3.2", 8080))
+    t_ack_receiver = threading.Thread(target=ack_receiver, args=("10.10.3.1", 8080))
+    t_file_sender.start()
+    t_ack_receiver.start()
+    t_file_sender.join()
+    t_ack_receiver.join()
 
 main()
