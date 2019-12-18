@@ -55,7 +55,7 @@ def exp1():
     write_to_file("output1")
 
 def exp2():
-    global byte_chunks
+    global done, byte_chunks
     t_file_receiver_r1 = threading.Thread(target=file_receiver, daemon=True, args=("10.10.4.2", 8080, "10.10.8.1", 8080))
     t_file_receiver_r2 = threading.Thread(target=file_receiver, daemon=True, args=("10.10.5.2", 8080, "10.10.8.2", 8080))
     t_file_receiver_r1.start()
