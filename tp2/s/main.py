@@ -106,7 +106,7 @@ def exp2():
     else:
         # parent, r2
         file_sender("10.10.2.2", 8080, "10.10.2.1", 8080)
-        os.waitpid(pid)
+        os.waitpid(pid, 0)
 
 def main():
     if sys.argv[1] == "exp1":
