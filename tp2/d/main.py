@@ -10,6 +10,7 @@ N = 5*1024*1024//payload_size
 done = False
 
 byte_chunks = [None] * N
+byte_chunks_locks = [threading.Lock()] * N
 
 def calculate_checksum(payload):
     return hashlib.md5(payload).hexdigest().encode()
@@ -38,8 +39,10 @@ def file_receiver(src_ip, src_port, dst_ip, dst_port):
             ack_sender_socket.sendto(create_packet(0, 0), (dst_ip, dst_port))
             return
         if checksum == calculate_checksum(payload):
+            byte_chunks_locks[seq_n - 1].acquire()
             if byte_chunks[seq_n - 1] == None:
                 byte_chunks[seq_n - 1] = payload
+            byte_chunks_locks[seq_n - 1].release()
             ack_sender_socket.sendto(create_packet(0, seq_n), (dst_ip, dst_port))
 
 def write_to_file(file_name):

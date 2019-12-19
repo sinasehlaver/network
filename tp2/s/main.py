@@ -16,7 +16,11 @@ is_acked = [False] * (N + 1)
 is_sent = [False] * N
 byte_chunks = ["".encode()] * (N + 1)
 
-timeout_value = 1
+timeout_interval = 1
+estimated_rtt = None
+dev_rtt = None
+timeout_interval_lock = threading.Lock()
+starts = [None] * (N + 1)
 
 consecutive_timeouts = 0
 consecutive_timeouts_lock = threading.Lock()
@@ -66,25 +70,42 @@ def file_sender(src_ip, src_port, dst_ip, dst_port):
     sender(file_sender_socket, dst_ip, dst_port, -1)
 
 def ack_receiver(src_ip, src_port):
-    global is_acked
+    global is_acked, timeout_interval, estimated_rtt, dev_rtt, timeout_interval_lock, starts
     ack_receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     ack_receiver_socket.bind((src_ip, src_port))
     while not all(is_acked):
         packet, _ = ack_receiver_socket.recvfrom(1024)
+        end = time.time()
         seq_n, ack_n, _, _, _ = extract_packet(packet)
         if ack_n == 0:
             is_acked = [True] * (N + 1)
+            return
         else:
             is_acked[ack_n - 1] = True
+        sample_rtt = end - starts[ack_n - 1]
+        if estimated_rtt == None:
+            estimated_rtt = sample_rtt
+        estimated_rtt = 0.875*estimated_rtt + 0.125*sample_rtt
+        temp = abs(sample_rtt - estimated_rtt)
+        if dev_rtt == None:
+            dev_rtt = temp
+        dev_rtt = 0.75*dev_rtt + 0.25*abs(temp)
+        timeout_interval_lock.acquire()
+        timeout_interval = estimated_rtt + 4*dev_rtt
+        timeout_interval_lock.release()
 
 def sender(file_sender_socket, dst_ip, dst_port, i):
-    global is_acked, byte_chunks, timeout_value, consecutive_timeouts, consecutive_timeouts_lock
+    global is_acked, byte_chunks, consecutive_timeouts, consecutive_timeouts_lock, starts, timeout_interval, timeout_interval_lock
     is_timedout = False
     while not is_acked[i]:
         if is_timedout:
             consecutive_timeouts_lock.acquire()
             consecutive_timeouts += 1
             consecutive_timeouts_lock.release()
+        timeout_interval_lock.acquire()
+        timeout_value = timeout_interval
+        timeout_interval_lock.release()
+        starts[i] = time.time()
         file_sender_socket.sendto(create_packet(i + 1, 0, byte_chunks[i]), (dst_ip, dst_port))
         time.sleep(timeout_value)
         is_timedout = True
@@ -98,7 +119,6 @@ def exp1():
 
 def exp2():
     divide_into_byte_chunks("input2")
-    # fork it
     pid = os.fork()
     if pid == 0:
         # child, r1
