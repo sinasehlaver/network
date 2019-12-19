@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -e
+./reset.sh
 
-./resetConfig.sh
+./init.sh
 
-./lossConfig.sh $2
+./config.sh $1
 
-python3 ~/r2/main.py
+python3 main.py

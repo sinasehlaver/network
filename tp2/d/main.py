@@ -3,6 +3,7 @@ import threading
 import struct
 import sys
 import hashlib
+import time
 
 payload_size = 512
 N = 5*1024*1024//payload_size

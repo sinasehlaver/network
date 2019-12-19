@@ -50,6 +50,7 @@ def file_sender(src_ip, src_port, dst_ip, dst_port):
     threading.Thread(target=ack_receiver, daemon=True, args=(src_ip, src_port)).start()
     file_sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     reached_end = False
+    file_transfer_time_start = time.time()
     while not all(is_acked[:-1]):
         consecutive_timeouts_lock.acquire()
         if consecutive_timeouts > consecutive_timeouts_threshold:
@@ -67,7 +68,10 @@ def file_sender(src_ip, src_port, dst_ip, dst_port):
             if not is_sent[i]:
                 threading.Thread(target=sender, daemon=True, args=(file_sender_socket, dst_ip, dst_port, i)).start()
                 is_sent[i] = True
-    sender(file_sender_socket, dst_ip, dst_port, -1)
+    if not is_acked[-1]:
+        file_transfer_time_end = time.time()
+        print(file_transfer_time_end - file_transfer_time_start)
+        sender(file_sender_socket, dst_ip, dst_port, -1)
 
 def ack_receiver(src_ip, src_port):
     global is_acked, timeout_interval, estimated_rtt, dev_rtt, timeout_interval_lock, starts
