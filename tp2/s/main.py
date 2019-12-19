@@ -16,7 +16,7 @@ is_acked = [False] * (N + 1)
 is_sent = [False] * N
 byte_chunks = ["".encode()] * (N + 1)
 
-timeout_interval = 1
+timeout_interval = 0.05
 estimated_rtt = None
 dev_rtt = None
 timeout_interval_lock = threading.Lock()
