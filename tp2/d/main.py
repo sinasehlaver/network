@@ -29,10 +29,7 @@ def file_receiver(src_ip, src_port, dst_ip, dst_port):
     file_receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     file_receiver_socket.bind((src_ip, src_port))
     ack_sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    while True:
-        if done:
-            ack_sender_socket.sendto(create_packet(0, 0), (dst_ip, dst_port))
-            return
+    while not done:
         packet, _ = file_receiver_socket.recvfrom(1024)
         seq_n, ack_n, _, checksum, payload = extract_packet(packet)
         if seq_n == 0 and ack_n == 0:
@@ -43,6 +40,7 @@ def file_receiver(src_ip, src_port, dst_ip, dst_port):
             byte_chunks_locks[seq_n - 1].acquire()
             if byte_chunks[seq_n - 1] == None:
                 byte_chunks[seq_n - 1] = payload
+                print(src_ip)
             byte_chunks_locks[seq_n - 1].release()
             ack_sender_socket.sendto(create_packet(0, seq_n), (dst_ip, dst_port))
 
@@ -59,13 +57,13 @@ def exp1():
     write_to_file("output1")
 
 def exp2():
-    global done, byte_chunks
+    global byte_chunks
     t_file_receiver_r1 = threading.Thread(target=file_receiver, daemon=True, args=("10.10.4.2", 8080, "10.10.8.1", 8080))
     t_file_receiver_r2 = threading.Thread(target=file_receiver, daemon=True, args=("10.10.5.2", 8080, "10.10.8.2", 8080))
     t_file_receiver_r1.start()
     t_file_receiver_r2.start()
     while not done:
-        continue
+    	continue
     write_to_file("output2")
 
 def main():
