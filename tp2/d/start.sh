@@ -4,6 +4,6 @@
 
 ./init.sh
 
-./config.sh $2
+./config.sh $1
 
-python3 main.py $1
+python3 main.py

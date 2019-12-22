@@ -1,7 +1,6 @@
 import socket
 import threading
 import struct
-import sys
 import hashlib
 
 dst_ips = {"10.10.3.2":"10.10.7.2", "10.10.1.2":"10.10.8.1", "10.10.2.1":"10.10.8.2"}
@@ -45,14 +44,8 @@ def write_to_file(file_name):
     f.close()
 
 def sample():
-    if sys.argv[1] == "exp1":
-        output_file_name = "output1"
-    elif sys.argv[1] == "exp2":
-        output_file_name = "output2"
-    else:
-        return
     file_receiver()
-    write_to_file(output_file_name)
+    write_to_file("output")
     
 def main():
 	while True:

@@ -16,7 +16,7 @@ else:
 
 payload_size = 512
 N = 5*1024*1024//payload_size
-window_size = 32
+window_size = 16
 byte_chunks = ["".encode()]*(N + 1)
 
 def calculate_checksum(payload):
