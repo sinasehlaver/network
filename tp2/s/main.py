@@ -148,14 +148,17 @@ def main():
     error = 1
     ftts.append(sample())
     print(len(ftts), error, ftts[-1])
+    sys.stdout.flush()
     while error >= 0.025:
         ftts.append(sample())
-        error = 1.96*st.stdev(ftts)/math.sqrt(len(ftts))
+        error = 1.96*st.pstdev(ftts)/math.sqrt(len(ftts))
         print(len(ftts), error, ftts[-1])
+        sys.stdout.flush()
     print("size = ", len(ftts))
     print("mean = ", st.mean(ftts))
-    print("standard deviation = ", st.stdev(ftts))
+    print("standard deviation = ", st.pstdev(ftts))
     print("margin of error = ", error)
     print("median = ", st.median(ftts))
+    sys.stdout.flush()
 
 main()
