@@ -5,8 +5,12 @@ def server(src_ip, src_port, dst_ip, dst_port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
     server_socket.bind((src_ip, src_port))
     while True:
-        data, addr = server_socket.recvfrom(1024)
-        server_socket.sendto(data, (dst_ip, dst_port))
+        try:
+            server_socket.settimeout(20)
+            data, addr = server_socket.recvfrom(1024)
+            server_socket.sendto(data, (dst_ip, dst_port))
+        except socket.timeout:
+            return
 
 def main():
     t_server_from_s_to_d = threading.Thread(target=server, args=("10.10.1.2", 8080, "10.10.4.2", 8080))

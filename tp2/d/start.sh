@@ -6,4 +6,4 @@
 
 ./config.sh $1
 
-python3 main.py
+python3 main.py $2 $3

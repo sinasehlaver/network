@@ -2,11 +2,12 @@ import socket
 import threading
 import struct
 import hashlib
+import sys
 
 dst_ips = {"10.10.3.2":"10.10.7.2", "10.10.1.2":"10.10.8.1", "10.10.2.1":"10.10.8.2"}
 
 payload_size = 512
-N = 5*1024*1024//payload_size
+N = 5000000//payload_size + 1
 
 byte_chunks = [None]*N
 
@@ -45,10 +46,14 @@ def write_to_file(file_name):
 
 def sample():
     file_receiver()
-    write_to_file("output")
+    write_to_file(sys.argv[1])
     
 def main():
-	while True:
-		sample()
+    repetition_count = int(sys.argv[2])
+    if repetition_count < 0:
+    	while True:
+    		sample()
+    for i in range(repetition_count):
+        sample()
 
 main()

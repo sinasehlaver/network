@@ -15,7 +15,7 @@ else:
     sys.exit()
 
 payload_size = 512
-N = 5*1024*1024//payload_size
+N = 5000000//payload_size + 1
 window_size = 16
 byte_chunks = ["".encode()]*(N + 1)
 
@@ -140,25 +140,24 @@ def sample():
     return file_sender()
 
 def main():
-    if sys.argv[1] == "exp1":
-        divide_into_byte_chunks("input1")
-    elif sys.argv[1] == "exp2":
-        divide_into_byte_chunks("input2")
+    divide_into_byte_chunks(sys.argv[2])
     ftts = []
     error = 1
     ftts.append(sample())
-    print(len(ftts), error, ftts[-1])
+    threshold = float(sys.argv[3])
+    print(ftts[-1])
     sys.stdout.flush()
-    while error >= 0.025:
-        ftts.append(sample())
-        error = 1.96*st.pstdev(ftts)/math.sqrt(len(ftts))
-        print(len(ftts), error, ftts[-1])
+    if threshold > 0:
+        while error >= threshold:
+            ftts.append(sample())
+            error = 1.96*st.pstdev(ftts)/math.sqrt(len(ftts))
+            print(len(ftts), error, ftts[-1])
+            sys.stdout.flush()
+        print("size = ", len(ftts))
+        print("mean = ", st.mean(ftts))
+        print("standard deviation = ", st.pstdev(ftts))
+        print("margin of error = ", error)
+        print("median = ", st.median(ftts))
         sys.stdout.flush()
-    print("size = ", len(ftts))
-    print("mean = ", st.mean(ftts))
-    print("standard deviation = ", st.pstdev(ftts))
-    print("margin of error = ", error)
-    print("median = ", st.median(ftts))
-    sys.stdout.flush()
 
 main()
