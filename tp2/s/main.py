@@ -112,7 +112,7 @@ def sender(file_sender_socket, i):
     f = False# send_count did not exceed 100 yet
     while not is_acked[i]:# while packet with given index is not acked yet
         is_timedout_lock.acquire()# Acquire lock for timeout checks
-        if send_count >= 100:# if send_count exceeeds 100
+        if send_count >= 1000:# if send_count exceeeds 100
             is_timedout = True# set flag
             timeouts.append(i)# append index of packet to the failed packets list
             f = True# set flag
